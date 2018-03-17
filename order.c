@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 #define MAXSIZE 10
 #define true 1
@@ -22,8 +23,8 @@ void BubbleSort(SqList *L){ // 冒泡排序
 	int j;
 	for(i = 1; i < L->length; i++){
 		for(j = L->length; j > i; j--){
-			if(L->r[i] > L->r[j]){
-				swap(L, i, j);
+			if(L->r[j - 1] > L->r[j]){
+				swap(L, j - 1, j);
 			}
 		}
 	}
@@ -49,7 +50,7 @@ void SelectSort(SqList *L){ // 简单选择排序
 void InsertSort(SqList *L){ // 直接插入排序
 	int i;
 	int j;
-	for(i = 2; i < L->length; i++){
+	for(i = 2; i <= L->length; i++){
 		if(L->r[i - 1] > L->r[i]){
 			L->r[0] = L->r[i];
 			for(j = i - 1; L->r[j] > L->r[0]; j--){
@@ -107,6 +108,76 @@ void HeapSort(SqList *L){ // 堆排序
 	for(i = length; i > 0; i--){
 		swap(L, 1, i);
 		HeapAdjust(L, 1, i - 1);
+	}
+}
+
+void Merge(SqList *L, int start, int mid, int end){
+	int i = start, j = mid + 1;
+	int k = 0;
+	int *p = (int *)malloc((end - start + 1) * sizeof(int));
+	if(!p){
+		exit(0);
+	}
+	while(i <= mid && j <= end){
+		if(L->r[i] < L->r[j]){
+			p[k++] = L->r[i++];
+		}else if(L->r[i] > L->r[j]){
+			p[k++] = L->r[j++];
+		}
+	}
+	while(i <= mid && j > end){
+		p[k++] = L->r[i++];
+	}
+	while(j <= end && i > mid){
+		p[k++] = L->r[j++];
+	}
+	for(i = 0; i < k; i++){
+		L->r[start + i] = p[i];
+	}
+	free(p);
+}
+
+void MSort(SqList *L, int start, int end){
+	int mid = (start + end) / 2;
+	if(start >= mid){ // 递归终止
+		return;
+	}
+	MSort(L, start, mid);
+	MSort(L, mid + 1, end);
+	Merge(L, start, mid, end);
+}
+
+void MergeSort(SqList *L){ // 归并排序
+	int length = L->length;
+	if(length != 1){
+		MSort(L, 1, length);
+	}
+}
+
+void QSort(SqList *L, int start, int end){
+	int temp = L->r[start];
+	int i = start;
+	int j = end;
+	while(i != j){
+		while(L->r[j] >= temp && j > i){
+			j--;
+		}
+		while(L->r[i] <= temp && i < j){
+			i++;
+		}
+		if(i != j){
+			swap(L, i, j);
+		}
+	}
+	swap(L, i, start);
+	QSort(L, start, i - 1);
+	QSort(L, i + 1, end);
+}
+
+void QuickSort(SqList *L){ // 快速排序
+	int length = L->length;
+	if(length > 1){
+		QSort(L, 1, length);
 	}
 }
 
