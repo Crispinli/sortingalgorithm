@@ -77,7 +77,7 @@ void ShellSort(SqList *L){ // 希尔排序
 	}
 }
 
-void HeapAdjust(SqList *L, int cur, int length){
+void HeapAdjust(SqList *L, int cur, int length){ // 递归实现
 	// 进行堆调整，将序列转换成大顶堆
 	int j = 2 * cur;
 	if(j <= length){ // 若当前节点含有左节点
